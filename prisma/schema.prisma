@@ -15,13 +15,8 @@ model Booking {
   notes        String?
   start        DateTime
   end          DateTime
-  status       BookingStatus @default(CONFIRMED)
+  status       String @default("CONFIRMED")
   createdAt    DateTime @default(now())
-}
-
-enum BookingStatus {
-  CONFIRMED
-  CANCELED
 }
 
 model Block {
