@@ -2,6 +2,7 @@ import { addMinutes, format } from 'date-fns'
 import { zonedTimeToUtc, utcToZonedTime } from 'date-fns-tz'
 import { prisma } from './db'
 import { BUSINESS_DAYS, OPEN_TIME, CLOSE_TIME, SLOT_MINUTES, BUFFER_MINUTES, TZ } from './config'
+import { BookingStatus } from './booking-status'
 
 export async function getAvailableSlots(dateStr: string) {
   const day = utcToZonedTime(new Date(dateStr + 'T00:00:00Z'), TZ)
@@ -17,7 +18,7 @@ export async function getAvailableSlots(dateStr: string) {
   const dayEndUtc = zonedTimeToUtc(close, TZ)
 
   const bookings = await prisma.booking.findMany({
-    where: { start: { lt: dayEndUtc }, end: { gt: dayStartUtc }, status: 'CONFIRMED' }
+    where: { start: { lt: dayEndUtc }, end: { gt: dayStartUtc }, status: BookingStatus.CONFIRMED }
   })
   const blocks = await prisma.block.findMany({
     where: { start: { lt: dayEndUtc }, end: { gt: dayStartUtc } }
