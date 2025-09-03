@@ -2,10 +2,13 @@ import AdminCalendar from '@/components/AdminCalendar'
 import { prisma } from '@/lib/db'
 import { formatInTimeZone, zonedTimeToUtc } from 'date-fns-tz'
 import { redirect } from 'next/navigation'
+import { requireAdmin } from '@/lib/auth'
+import { cookies } from 'next/headers'
 
 const tz = process.env.TZ || 'Asia/Taipei'
 
 export default async function AdminPage() {
+  requireAdmin()
   const bookings = await prisma.booking.findMany({ where: { start: { gte: new Date() } }, orderBy: { start: 'asc' } })
   const blocks = await prisma.block.findMany({ where: { start: { gte: new Date() } }, orderBy: { start: 'asc' } })
 
@@ -30,8 +33,17 @@ export default async function AdminPage() {
     redirect('/admin')
   }
 
+  async function logout() {
+    'use server'
+    cookies().set('admin', '', { maxAge: 0 })
+    redirect('/admin/login')
+  }
+
   return (
     <div>
+      <form action={logout} className="mb-4">
+        <button type="submit" className="text-sm text-gray-600 underline">登出</button>
+      </form>
       <AdminCalendar bookings={bookings} blocks={blocks} />
       <h2 className="font-bold mt-6">新增封鎖</h2>
       <form action={addBlock} className="flex gap-2 mb-6">
@@ -42,7 +54,7 @@ export default async function AdminPage() {
       <h2 className="font-bold">未來預約</h2>
       <ul>
         {bookings.map(b => (
-          <li key={b.id}>{b.customerName} {formatInTimeZone(b.start, tz, 'MM/dd HH:mm')} {b.phone}</li>
+          <li key={b.id}>{b.customerName} {formatInTimeZone(b.start, tz, 'MM/dd HH:mm')} {b.phone} — {b.serviceName}（{b.duration}分, $ {b.servicePrice}）</li>
         ))}
       </ul>
       <h2 className="font-bold mt-4">封鎖列表</h2>

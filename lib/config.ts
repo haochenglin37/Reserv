@@ -4,3 +4,5 @@ export const CLOSE_TIME = process.env.CLOSE_TIME || '19:00'
 export const SLOT_MINUTES = parseInt(process.env.APPOINTMENT_SLOT_MINUTES || '60')
 export const BUFFER_MINUTES = parseInt(process.env.BOOKING_BUFFER_MINUTES || '120')
 export const TZ = process.env.TZ || 'Asia/Taipei'
+// 每月幾號開放「下個月」的預約，預設 10 號
+export const NEXT_MONTH_OPEN_DAY = parseInt(process.env.NEXT_MONTH_OPEN_DAY || '10')

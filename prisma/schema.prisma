@@ -16,7 +16,18 @@ model Booking {
   start        DateTime
   end          DateTime
   status       String @default("CONFIRMED")
+  // 新增：服務與時長
+  serviceId    String
+  serviceName  String
+  duration     Int
+  servicePrice Int
   createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  // 關聯登入使用者（LINE）
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
 
 model Block {
@@ -26,4 +37,26 @@ model Block {
   end       DateTime
   allDay    Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+// LINE 登入使用者
+model User {
+  id          String    @id @default(uuid())
+  lineUserId  String    @unique
+  displayName String?
+  avatar      String?
+  createdAt   DateTime  @default(now())
+  sessions    Session[]
+  bookings    Booking[]
+}
+
+// 簡單 Session（以 id 做為 cookie token）
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([userId])
 }

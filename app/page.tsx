@@ -7,6 +7,10 @@ export default function Home() {
       <Link href="/book" className="px-4 py-2 bg-pink-500 text-white rounded">
         立即預約
       </Link>
+      <div className="h-4" />
+      <Link href="/api/auth/line/login" className="px-4 py-2 border rounded">
+        使用 LINE 登入
+      </Link>
     </main>
   )
 }
