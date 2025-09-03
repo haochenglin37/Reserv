@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+
+.env
+*.env.local
+
+prisma/.db
+prisma/.db-shm
+prisma/*.db-wal
+*.sqlite
+
+.DS_Store
+.vercel
